@@ -20,6 +20,9 @@ var vue_options = {
             return do_get(this.base_url + "/start", { params: "5000" } )
             .then(json =>{
                 console.log(json);
+            })
+            .catch(error =>{
+            	alert(error);
             });
         },
         ir_get: function(){
@@ -27,19 +30,27 @@ var vue_options = {
             .then(json =>{
                 console.log(json);
                 if( json.return_value != "NG" ){
-                    var ret = prompt('–¼‘O‚ðŒˆ‚ß‚Ä‚­‚¾‚³‚¢B');
+                    var ret = prompt('åå‰ã‚’æ±ºã‚ã¦ãã ã•ã„ã€‚');
                     if( ret ){
                         this.send_data_list.push({ name: ret, data: json.return_value });
                         this.send_data = json.return_value;
                         localStorage.setItem('send_data_list', JSON.stringify(this.send_data_list));
                     }
+                }else{
+                    alert('å–å¾—ã§ãã¾ã›ã‚“ã§ã—ãŸã€‚');
                 }
+            })
+            .catch(error =>{
+            	alert(error);
             });
         },
         ir_send: function(){
             return do_get(this.base_url + "/send", { params: this.send_data} )
             .then(json =>{
                 console.log(json);
+            })
+            .catch(error =>{
+            	alert(error);
             });
         },
         data_select: function(index){
@@ -64,20 +75,17 @@ var vue_options = {
 vue_add_methods(vue_options, methods_utils);
 var vue = new Vue( vue_options );
 
-function do_get(url, qs){
-    var headers = { 'Content-Type': 'application/x-www-form-urlencoded' }; 
+function do_get(url, qs) {
+  var params = new URLSearchParams(qs);
+  var url2 = new URL(url);
+  url2.search = params;
 
-    var params = new URLSearchParams();
-    for( var key in qs )
-        params.set(key, qs[key] );
-
-    return fetch(url + '?' + params.toString(), {
-        method : 'GET',
-        headers: headers
+  return fetch(url2.toString(), {
+      method: 'GET',
     })
     .then((response) => {
-        if( !response.ok )
-            throw "status is not 200.";
-        return response.json();
+      if (!response.ok)
+        throw 'status is not 200';
+      return response.json();
     });
 }
